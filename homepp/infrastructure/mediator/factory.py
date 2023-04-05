@@ -24,6 +24,10 @@ from homepp.core.user.handlers.logout import (
     LogoutUserCommand,
     LogoutUserHandler,
 )
+from homepp.core.user.handlers.get_user_by_hw_key import (
+    GetUserByHwKeyCommand,
+    GetUserByHwKeyHandler,
+)
 
 
 def build_mediator(
@@ -55,6 +59,9 @@ def build_mediator(
     mediator.bind(
         LogoutUserCommand,
         LogoutUserHandler(auth_service, user_read_gateway, token_gateway),
+    )
+    mediator.bind(
+        GetUserByHwKeyCommand, GetUserByHwKeyHandler(user_read_gateway)
     )
 
     return mediator

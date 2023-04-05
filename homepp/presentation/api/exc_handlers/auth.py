@@ -6,10 +6,7 @@ from homepp.core.common.exc.auth import (
     InvalidCredentialsException,
     SessionNotFoundException,
 )
-
-
-def make_detail(message: str):
-    return {"detail": message}
+from .utils import make_detail
 
 
 async def invalid_token_exc_handler(
@@ -39,7 +36,7 @@ async def session_not_found_exc_handler(
     )
 
 
-def setup_auth_exc_handlers(app: FastAPI):
+def setup_auth_exc_handlers(app: FastAPI) -> None:
     app.add_exception_handler(InvalidTokenException, invalid_token_exc_handler)
     app.add_exception_handler(
         InvalidCredentialsException, invalid_credentials_exc_handler
