@@ -17,4 +17,4 @@ async def get_client(
     hw_key: str, mediator: Mediator = Depends(provide_mediator_stub)
 ) -> GetClientResponse:
     user = await mediator.send(GetUserByHwKeyCommand(hw_key))
-    return GetClientResponse(client_id=user.id)
+    return GetClientResponse(client_id=str(user.id))

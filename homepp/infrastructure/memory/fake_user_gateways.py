@@ -1,3 +1,4 @@
+import uuid
 from typing import Optional, List
 
 from homepp.core.common.types.user import UserId, Email
@@ -41,4 +42,5 @@ class FakeUserWriteGateway(UserWriteGateway):
             self.users = users
 
     def create_user(self, user: User) -> None:
+        user.id = UserId(uuid.uuid4())
         self.users.append(user)
