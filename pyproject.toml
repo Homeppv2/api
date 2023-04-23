@@ -20,6 +20,8 @@ passlib = "^1.7.4"
 pydantic = {extras = ["email"], version = "^1.10.7"}
 python-multipart = "^0.0.6"
 pyjwt = "^2.6.0"
+sqlalchemy = "^2.0.10"
+alembic = "^1.10.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"
