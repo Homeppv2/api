@@ -1,5 +1,6 @@
 import uuid
 from dataclasses import dataclass
+from typing import Optional
 
 from homepp.core.common.handler import Handler
 from homepp.core.common.uow import UnitOfWork
@@ -17,7 +18,7 @@ class GetCurrentUserCommand:
     session_id: SessionId
 
 
-class GetCurrentUserHandler(Handler[GetCurrentUserCommand, User]):
+class GetCurrentUserHandler(Handler[GetCurrentUserCommand, Optional[User]]):
     def __init__(
         self,
         auth_service: AuthUserService,
@@ -30,7 +31,7 @@ class GetCurrentUserHandler(Handler[GetCurrentUserCommand, User]):
         self._token_gateway = token_gateway
         self._uow = uow
 
-    async def execute(self, command: GetCurrentUserCommand) -> User:
+    async def execute(self, command: GetCurrentUserCommand) -> Optional[User]:
         token = await self._token_gateway.get(command.session_id)
         if not token:
             raise SessionNotFoundException
