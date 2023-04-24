@@ -6,7 +6,7 @@ from websockets.exceptions import ConnectionClosed
 
 from homepp.core.user.domain.models import User
 from homepp.config.settings import get_settings, Settings
-from ...deps.auth import current_user
+from ...deps.auth import get_current_user
 
 router = APIRouter()
 
@@ -18,7 +18,7 @@ router = APIRouter()
 @router.websocket("/connect/ws")
 async def controller_connect(
     websocket: WebSocket,
-    user: User = Depends(current_user),
+    user: User = Depends(get_current_user),
     settings: Settings = Depends(get_settings),
 ):
     await websocket.accept()

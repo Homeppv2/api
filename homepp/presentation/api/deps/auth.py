@@ -21,7 +21,7 @@ def get_login_form(
     )
 
 
-async def current_user(
+async def get_current_user(
     mediator: Mediator = Depends(provide_mediator_stub),
     session_id: str | None = Cookie(default=None),
 ) -> User:
