@@ -26,7 +26,6 @@ class LogoutUserHandler(Handler[LogoutUserCommand, None]):
 
     async def execute(self, command: LogoutUserCommand) -> None:
         token = await self._token_gateway.get(command.session_id)
-
         if not token:
             raise SessionNotFoundException
         await self._token_gateway.delete(command.session_id)

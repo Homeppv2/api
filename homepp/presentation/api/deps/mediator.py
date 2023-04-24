@@ -32,7 +32,6 @@ def provide_mediator(
     tokens_gateway: TokenGateway = Depends(provide_tokens_gateway),
     settings: Settings = Depends(get_settings),
 ) -> Mediator:
-
     # TODO: Implement with sqlalchemy
     fake_user_read_gateway = FakeUserReadGateway(users)
     fake_user_write_gateway = FakeUserWriteGateway(users)

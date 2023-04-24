@@ -15,6 +15,7 @@ router = APIRouter()
 # move the queue to the infrastructure,
 # add a connection manager and check for disconnection
 
+
 @router.websocket("/connect/ws")
 async def controller_connect(
     websocket: WebSocket,
@@ -24,9 +25,7 @@ async def controller_connect(
     await websocket.accept()
     connection = await aio_pika.connect_robust(settings.rabbit.url)
     async with connection.channel() as channel:
-        queue = await channel.declare_queue(
-            f"client_{user.id}", durable=True
-        )
+        queue = await channel.declare_queue(f"client_{user.id}", durable=True)
         async with queue.iterator() as queue_iter:
             async for message in queue_iter:
                 try:

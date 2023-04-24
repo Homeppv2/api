@@ -21,7 +21,6 @@ async def logout(
 ):
     if not session_id:
         raise SessionNotFoundException
-
     await mediator.send(
         LogoutUserCommand(session_id=SessionId(uuid.UUID(session_id)))
     )

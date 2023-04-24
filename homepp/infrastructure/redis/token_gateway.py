@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import timedelta
 from redis.asyncio import Redis
 
 from homepp.core.common.types.auth import SessionId
@@ -10,7 +11,7 @@ class TokenGatewayImpl(TokenGateway):
         self._redis = redis
 
     async def create(self, session_id: SessionId, token: str) -> None:
-        await self._redis.set(str(session_id), token)
+        await self._redis.set(str(session_id), token, timedelta(days=1.0))
 
     async def delete(self, session_id: SessionId) -> None:
         await self._redis.delete(str(session_id))
