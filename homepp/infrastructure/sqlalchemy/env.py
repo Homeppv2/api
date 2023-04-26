@@ -6,7 +6,7 @@ from homepp.core.user.domain.models import Base
 
 config = context.config
 
-config.set_main_option('sqlalchemy.url', 'sqlite:///SQLitedb')
+config.set_main_option('sqlalchemy.url', 'sqlite:///test')
 
 target_metadata = Base.metadata
 
