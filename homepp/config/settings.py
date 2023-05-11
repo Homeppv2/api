@@ -3,6 +3,35 @@ from dataclasses import dataclass, field
 
 
 @dataclass(slots=True)
+class PGSettings:
+    user: str = field(init=False)
+    password: str = field(init=False)
+    host: str = field(init=False)
+    db: str = field(init=False)
+    port: str = field(init=False)
+    url: str = field(init=False)
+
+    def __post_init__(self):
+        self._read_env()
+
+    def _read_env(self):
+        self.user = os.getenv("POSTGRES_USER")
+        self.password = os.getenv("POSTGRES_PASSWORD")
+        self.host = os.getenv("POSTGRES_HOST")
+        self.db = os.getenv("POSTGRES_DB")
+        self.port = os.getenv("POSTGRES_PORT")
+        self.url = (
+            "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}".format(
+                user=self.user,
+                password=self.password,
+                host=self.host,
+                port=self.port,
+                db=self.db,
+            )
+        )
+
+
+@dataclass(slots=True)
 class RabbitMQSettings:
     username: str = field(init=False)
     password: str = field(init=False)
@@ -51,10 +80,10 @@ class ServerSettings:
         self.host = os.getenv("SERVER_HOST")
         self.port = int(os.getenv("SERVER_PORT"))
 
-
 @dataclass(slots=True)
 class Settings:
     server: ServerSettings = field(init=False, default_factory=ServerSettings)
+    postgres: PGSettings = field(init=False, default_factory=PGSettings)
     redis: RedisSettings = field(init=False, default_factory=RedisSettings)
     rabbit: RabbitMQSettings = field(
         init=False, default_factory=RabbitMQSettings
