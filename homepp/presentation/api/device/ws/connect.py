@@ -1,12 +1,18 @@
 import json
 import aio_pika
+from uuid import UUID
 from fastapi import APIRouter, Depends
 from starlette.websockets import WebSocket
 from websockets.exceptions import ConnectionClosed
 
-from homepp.core.user.domain.models import User
+# from homepp.core.user.domain.models import User
 from homepp.config.settings import get_settings, Settings
-from ...deps.auth import get_current_user
+from homepp.presentation.api.deps.auth import provide_mediator_stub
+from homepp.core.common.mediator import Mediator
+from homepp.core.common.types.auth import SessionId
+from homepp.core.common.exc.auth import SessionNotFoundException
+from homepp.core.user.handlers.current_user import GetCurrentUserCommand
+# from ...deps.auth import get_current_user
 
 router = APIRouter()
 
@@ -18,10 +24,26 @@ router = APIRouter()
 
 @router.websocket("/connect/ws")
 async def controller_connect(
+    session_id: str,
     websocket: WebSocket,
-    user: User = Depends(get_current_user),
+    mediator: Mediator = Depends(provide_mediator_stub),
     settings: Settings = Depends(get_settings),
 ):
+    err = False
+    if not session_id:
+        err = True
+    try:
+        user = await mediator.send(
+            GetCurrentUserCommand(SessionId(UUID(session_id)))
+        )
+        if not user:
+            err = True
+    except ValueError:
+        err = True
+
+    if err:
+        raise SessionNotFoundException
+
     await websocket.accept()
     connection = await aio_pika.connect_robust(settings.rabbit.url)
     async with connection.channel() as channel:
