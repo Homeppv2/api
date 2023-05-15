@@ -29,6 +29,7 @@ async def controller_connect(
     mediator: Mediator = Depends(provide_mediator_stub),
     settings: Settings = Depends(get_settings),
 ):
+    await websocket.accept()
     err = False
     if not session_id:
         err = True
@@ -40,11 +41,8 @@ async def controller_connect(
             err = True
     except ValueError:
         err = True
-
     if err:
         raise SessionNotFoundException
-
-    await websocket.accept()
     connection = await aio_pika.connect_robust(settings.rabbit.url)
     async with connection.channel() as channel:
         queue = await channel.declare_queue(f"client_{user.id}", durable=True)
